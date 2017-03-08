@@ -3,15 +3,15 @@ package main
 import (
 	"./conf"
 	"./static"
-	"fmt"
-	"log"
-	"strconv"
-	"strings"
-	"net/http"
-	"net"
-	"os"
 	"bytes"
 	"encoding/base64"
+	"fmt"
+	"log"
+	//"net"
+	"net/http"
+	"os"
+	"strconv"
+	"strings"
 )
 
 func GetUploadServerDispatch(w http.ResponseWriter, r *http.Request) {
@@ -28,18 +28,18 @@ func SetUploadServerDispatch(w http.ResponseWriter, r *http.Request) {
 	param_ip, found3 := r.Form["ip"]
 
 	if !(found1 && found2 && found3) {
-	        fmt.Fprint(w, "请勿非法访问")
-	        return
+		fmt.Fprint(w, "请勿非法访问")
+		return
 	}
 	act, err := strconv.Atoi(param_act[0])
 	if err != nil {
-	        fmt.Fprint(w, "请求非法")
-	        return
+		fmt.Fprint(w, "请求非法")
+		return
 	}
 	dispatchstatus, err := strconv.Atoi(param_dispatchstatus[0])
 	if err != nil {
-	        fmt.Fprint(w, "请求非法")
-	        return
+		fmt.Fprint(w, "请求非法")
+		return
 	}
 
 	ret := conf.SetUploadServerDispatch(param_ip[0], act, dispatchstatus)
@@ -58,8 +58,8 @@ func BasicAuth(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 
 		result := "{"
-		result = result + "\"result\":" +  "\"ture\"" + ","
-		result = result +"\"code\":" + "\"" + strconv.Itoa(401) + "\"" + "}"
+		result = result + "\"result\":" + "\"ture\"" + ","
+		result = result + "\"code\":" + "\"" + strconv.Itoa(401) + "\"" + "}"
 		fmt.Fprintf(w, result) //这个写入到w的是输出到客户端的
 		return
 	}
@@ -92,15 +92,15 @@ func BasicAuth(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 				if path == "" {
-				    path = "index.html"
+					path = "index.html"
 				}
 
-				pwd,_ := os.Getwd()
-				path = pwd + "/" +path;
+				pwd, _ := os.Getwd()
+				path = pwd + "/" + path
 				// 提供文件 第一次为index.html，以后依次为index.html中定义加载的js和css
 				http.ServeFile(w, r, path)
 			}
-	    }
+		}
 	} else {
 		fmt.Println("not http basic auth!")
 		fmt.Fprint(w, "not http basic auth")
@@ -130,29 +130,29 @@ func OperateUploadServer(w http.ResponseWriter, r *http.Request) {
 
 	para := new(conf.InputServerPara)
 	para.Op = op
-	
-	if (op == 1) {
+
+	if op == 1 {
 		nodenum, err := strconv.Atoi(param_node[0])
-		if (err != nil) {
+		if err != nil {
 			fmt.Fprint(w, "请求非法")
-		      return
+			return
 		}
 
 		para.Nodenumber = nodenum
 	}
 
-	if (op == 0 || op == 2) {
+	if op == 0 || op == 2 {
 		nodenum, err := strconv.Atoi(param_node[0])
-		if (err != nil) {
+		if err != nil {
 			fmt.Fprint(w, "请求非法")
-		      return
+			return
 		}
-		
-		if (op == 2) {
+
+		if op == 2 {
 			nodenumkey, err := strconv.Atoi(param_nodekey[0])
-			if (err != nil) {
+			if err != nil {
 				fmt.Fprint(w, "请求非法")
-			      return
+				return
 			}
 			para.Nodenumberkey = nodenumkey
 		}
@@ -177,16 +177,16 @@ func OperateUploadServer(w http.ResponseWriter, r *http.Request) {
 		// fmt.Println(para)
 	}
 
-	if (op == 3) {
+	if op == 3 {
 		nodenum, err := strconv.Atoi(param_node[0])
-		if (err != nil) {
+		if err != nil {
 			fmt.Fprint(w, "请求非法")
 			return
 		}
 
 		para.Nodenumber = nodenum
 	}
-	
+
 	ret := conf.OperateUploadServer(para)
 	// fmt.Println(ret)
 	fmt.Fprintf(w, ret) //这个写入到w的是输出到客户端的
@@ -200,18 +200,18 @@ func OperateUploadNode(w http.ResponseWriter, r *http.Request) {
 	param_nanme, _ := r.Form["nodename"]
 	param_cdnnodeid, _ := r.Form["cdnnodeid"]
 	// param_hdfsname, _ := r.Form["hdfsname"]
-	
+
 	if !(found1 && found2) {
 		fmt.Fprint(w, "请勿非法访问")
 		return
 	}
 	op, err := strconv.Atoi(param_op[0])
-	if (err != nil) {
+	if err != nil {
 		fmt.Fprint(w, "请求非法")
 		return
 	}
 	nodenum, err := strconv.Atoi(param_node[0])
-	if (err != nil) {
+	if err != nil {
 		fmt.Fprint(w, "请求非法")
 		return
 	}
@@ -220,7 +220,7 @@ func OperateUploadNode(w http.ResponseWriter, r *http.Request) {
 	paranode.Op = op
 	paranode.Nodenumber = nodenum
 
-	if (op == 0 || op == 2) {
+	if op == 0 || op == 2 {
 		param_ip, _ := r.Form["ip"]
 		param_explain, _ := r.Form["explain"]
 		// param_act, _ := r.Form["act"]
@@ -229,16 +229,16 @@ func OperateUploadNode(w http.ResponseWriter, r *http.Request) {
 		param_type, _ := r.Form["type"]
 
 		nodenum, err := strconv.Atoi(param_node[0])
-		if (err != nil) {
+		if err != nil {
 			fmt.Fprint(w, "请求非法")
 			return
 		}
-		
+
 		paranode.Type = 2
 
-		if (op == 2) {
+		if op == 2 {
 			nodenumkey, err := strconv.Atoi(param_nodekey[0])
-			if (err != nil) {
+			if err != nil {
 				fmt.Fprint(w, "请求非法")
 				return
 			}
@@ -253,7 +253,7 @@ func OperateUploadNode(w http.ResponseWriter, r *http.Request) {
 		}
 
 		cdnnodeid, err := strconv.Atoi(param_cdnnodeid[0])
-		if (err != nil) {
+		if err != nil {
 			fmt.Fprint(w, "请求非法")
 			return
 		}
@@ -277,32 +277,32 @@ func main() {
 	// new mux
 	mux := http.NewServeMux()
 	// reject function
-	mux.HandleFunc("/", BasicAuth)
+	//mux.HandleFunc("/", BasicAuth)
 	mux.HandleFunc("/getUploadStatus", GetUploadServerDispatch) //请求绑定函数
-	mux.HandleFunc("/setUploadStatus", SetUploadServerDispatch) 
-	mux.HandleFunc("/opUploadServer", OperateUploadServer)  
-	mux.HandleFunc("/opUploadNode", OperateUploadNode)     
-	mux.HandleFunc("/volumeData",static.Handler)
+	mux.HandleFunc("/setUploadStatus", SetUploadServerDispatch)
+	mux.HandleFunc("/opUploadServer", OperateUploadServer)
+	mux.HandleFunc("/opUploadNode", OperateUploadNode)
+	mux.HandleFunc("/volumeData", static.Handler)
 
-	addrs, err := net.InterfaceAddrs()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	//addrs, err := net.InterfaceAddrs()
+	//if err != nil {
+	//	fmt.Println(err)
+	//	os.Exit(1)
+	//}
 
-	var ip = ""
-	for _, address := range addrs {
-		if ipnet, ok := address.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
-			if ipnet.IP.To4() != nil {
-				//fmt.Println(ipnet.IP.String())
-				ip = ipnet.IP.String()
-				break	
-			}
-		}
-	}
+	var ip = "192.168.110.30"
+	//	for _, address := range addrs {
+	//		if ipnet, ok := address.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+	//			if ipnet.IP.To4() != nil {
+	//				//fmt.Println(ipnet.IP.String())
+	//				ip = ipnet.IP.String()
+	//				break
+	//			}
+	//		}
+	//	}
 
-	var url = ip + ":" + "80"
-	err = http.ListenAndServe(url, mux) //设置监听的端口
+	var url = ip + ":" + "8080"
+	err := http.ListenAndServe(url, mux) //设置监听的端口
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
