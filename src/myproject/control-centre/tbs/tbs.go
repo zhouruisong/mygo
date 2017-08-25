@@ -101,6 +101,7 @@ func CreateEvent(eventName string, params map[string]interface{}) *Event {
 }
 
 type EventCallback func(*Event)
+
 var _instance *Dispatcher
 var _cb *EventCallback
 

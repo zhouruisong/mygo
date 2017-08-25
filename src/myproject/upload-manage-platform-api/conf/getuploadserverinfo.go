@@ -4,10 +4,10 @@ package conf
 
 import (
 	"./conf"
-	"strconv"
-	"strings"
 	"github.com/labix.org/v2/mgo"
 	"github.com/labix.org/v2/mgo/bson"
+	"strconv"
+	"strings"
 )
 
 func GetUploadServerInfo(nodenum int) string {
@@ -22,7 +22,7 @@ func GetUploadServerInfo(nodenum int) string {
 	err := collection.Find(bson.M{"nodenumber": nodenum}).One(&e)
 	result := "{"
 	if err != nil {
-		result = result + "\"result\":" +  "\"false\"" + "}"
+		result = result + "\"result\":" + "\"false\"" + "}"
 	} else {
 		result = result + "\"result\": " + "["
 		result = result + "{" + "\"act\":" + strconv.Itoa(e.Act) + "," + "\"beattime\":" + "\"" + e.Beattime + "\"" + "," + "\"cachesize\":" + "\"" + e.Cachesize + "\"" + ","
@@ -30,7 +30,7 @@ func GetUploadServerInfo(nodenum int) string {
 		result = result + "\"explain\":" + "\"" + e.Explain + "\"" + "," + "\"id\":" + strconv.Itoa(e.Id) + "," + "\"ip\":" + "\"" + e.Ip + "\"" + "," + "\"nodenumber\":" + strconv.Itoa(e.Nodenumber) + ","
 		result = result + "\"runstatus\":" + strconv.Itoa(e.Runstatus) + "},"
 		result = strings.TrimSuffix(result, ",")
-		result = result+ "]}"
+		result = result + "]}"
 	}
 
 	return result

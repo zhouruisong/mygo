@@ -1,0 +1,11 @@
+{
+    "log_path": "/usr/local/sandai/agent/logs",
+    "listen_port": 3000,
+    "tracker_server": ["192.168.110.34:22122"],
+    "fdfs_min_connection_count": 1,
+    "fdfs_max_connection_count": 5,
+    "tair_client": "127.0.0.1:28080",
+    "tair_server": ["192.168.110.34:5198","192.168.110.120:5198"],
+    "pipe_len": 9999,
+    "es_server": ["http://192.168.110.34:9200"]
+}

@@ -3,9 +3,9 @@ package conf
 import (
 	"bufio"
 	"fmt"
-	"io"
 	"github.com/labix.org/v2/mgo"
 	"github.com/labix.org/v2/mgo/bson"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -27,7 +27,7 @@ type Config struct {
 }
 
 type NodeInfo struct {
-	Id_                    bson.ObjectId   `bson:"_id"`
+	Id_                    bson.ObjectId `bson:"_id"`
 	Id                     int
 	Namenodeip             string
 	Nodenumber             int
@@ -51,11 +51,11 @@ type NodeInfo struct {
 }
 
 type UploadServerAll struct {
-  UploadServerInfos []UploadServerInfo
+	UploadServerInfos []UploadServerInfo
 }
 
 type UploadServerInfo struct {
-	Id_            bson.ObjectId    `bson:"_id"`
+	Id_            bson.ObjectId `bson:"_id"`
 	Act            int
 	Beattime       string
 	Cachesize      string
@@ -168,7 +168,7 @@ func Read(node, key string) string {
 	// fmt.Println(key)
 	//fmt.Println(node)
 	if myconfig == nil {
-		return ""	
+		return ""
 	}
 	// fmt.Println(myconfig.Mymap)
 	v, found := myconfig.Mymap[newkey]
@@ -177,7 +177,6 @@ func Read(node, key string) string {
 	}
 	return v
 }
-
 
 func ReadServerConf(confile string) string {
 	configfile = confile
@@ -204,7 +203,7 @@ func Init(confile string) (*mgo.Session, *mgo.Database) {
 		confpath := myconfig.GetCurrPath()
 		myconfig.InitConfig(confpath)
 	}
-	
+
 	var username, password string
 	if mgoSession == nil {
 		ip := Read("upload", "ip")

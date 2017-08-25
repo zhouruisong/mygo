@@ -1,8 +1,8 @@
 #!/bin/sh
-pid=`pidof cluster_backup`
+pid=`pidof cluster-test`
 if [ ! -z $pid ]; then
 		echo "kill pid $pid"
 		`kill $pid`
 fi
-echo "cluster_backup stop."
+echo "cluster-test stop."
 

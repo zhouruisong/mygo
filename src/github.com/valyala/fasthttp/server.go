@@ -1403,7 +1403,7 @@ func nextConnID() uint64 {
 // reads by default.
 //
 // See Server.MaxRequestBodySize for details.
-const DefaultMaxRequestBodySize = 400 * 1024 * 1024 *1024
+const DefaultMaxRequestBodySize = 400 * 1024 * 1024 * 1024
 
 func (s *Server) serveConn(c net.Conn) error {
 	serverName := s.getServerName()
@@ -1412,7 +1412,7 @@ func (s *Server) serveConn(c net.Conn) error {
 	currentTime := time.Now()
 	connTime := currentTime
 	maxRequestBodySize := s.MaxRequestBodySize
-	if maxRequestBodySize <= DefaultMaxRequestBodySize{
+	if maxRequestBodySize <= DefaultMaxRequestBodySize {
 		maxRequestBodySize = DefaultMaxRequestBodySize
 	}
 

@@ -10,7 +10,7 @@ func main() {
 	var cb tbs.EventCallback = onTest
 	//获取分派器单例
 	tbs.SetCallBack(&cb)
-	
+
 	service := ":1200"
 	tbs.ServerStarted(service)
 

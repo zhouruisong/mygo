@@ -4,9 +4,9 @@ package conf
 
 import (
 	"./conf"
-	"strconv"
 	"github.com/labix.org/v2/mgo"
 	"github.com/labix.org/v2/mgo/bson"
+	"strconv"
 )
 
 func GetUploadServerDispatch() string {
@@ -22,9 +22,9 @@ func GetUploadServerDispatch() string {
 	result := "{"
 	if err != nil {
 		//panic(err)
-		result = result + "\"result\":" +  "\"false\"" + "}"
+		result = result + "\"result\":" + "\"false\"" + "}"
 	} else {
-		result = result + "\"act\":" + strconv.Itoa(info.Act) + "," + "\"dispatchstatus\":" + strconv.Itoa(info.Dispatchstatus) +  "}"
+		result = result + "\"act\":" + strconv.Itoa(info.Act) + "," + "\"dispatchstatus\":" + strconv.Itoa(info.Dispatchstatus) + "}"
 	}
 
 	return result

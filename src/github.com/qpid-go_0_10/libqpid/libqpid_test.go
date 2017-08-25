@@ -3,9 +3,9 @@ package libqpid
 import "testing"
 import "fmt"
 
-func TestSendRecvMessage(t * testing.T) {
-        address := "winterfell.exchange.upload.server.status/winterfell.queue.upload.server.status";
-        options := "{reconnect: true, reconnect_interval: 2, reconnect_limit: 4, heartbeat: 4}";
+func TestSendRecvMessage(t *testing.T) {
+	address := "winterfell.exchange.upload.server.status/winterfell.queue.upload.server.status"
+	options := "{reconnect: true, reconnect_interval: 2, reconnect_limit: 4, heartbeat: 4}"
 
 	conn, err := QpidConnectionNew("10.11.144.92:5672", options)
 	if err != nil {
@@ -13,19 +13,18 @@ func TestSendRecvMessage(t * testing.T) {
 	}
 	defer conn.Close()
 
-	conn.Auth("winterfell","winterfellwinterfell")
+	conn.Auth("winterfell", "winterfellwinterfell")
 	conn.Open()
 
 	session := conn.CreateSession()
 	defer session.Close()
 
-	
-	sender, err := session.CreateSender(address);
+	sender, err := session.CreateSender(address)
 	if err != nil {
 		t.Error("address failed")
 	}
 	defer sender.Close()
-	recv, err :=  session.CreateRecv(address);
+	recv, err := session.CreateRecv(address)
 	if err != nil {
 		t.Error("address failed")
 	}
@@ -35,7 +34,7 @@ func TestSendRecvMessage(t * testing.T) {
 	m.SetContent([]byte("hello, go-world"))
 	m.SetDurable(true)
 	m.SetContentType("text/plain")
-	
+
 	sender.Send(m, true)
 
 	/* 3 seconds */
@@ -45,5 +44,5 @@ func TestSendRecvMessage(t * testing.T) {
 	}
 
 	session.Ack(false)
-	fmt.Printf("I got %s\n", mail.buffer);
+	fmt.Printf("I got %s\n", mail.buffer)
 }

@@ -22,10 +22,10 @@ func SetUploadServerDispatch(ip string, act int, dispatch int) string {
 	err := collection.Update(bson.M{"ip": ip}, bson.M{"$set": bson.M{"act": act, "dispatchstatus": dispatch}})
 	if err != nil {
 		//panic(err)
-		result = result + "\"result\":" +  "\"false\"" + "}"
+		result = result + "\"result\":" + "\"false\"" + "}"
 	} else {
-		result = result + "\"result\":" +  "\"true\"" + "}"
+		result = result + "\"result\":" + "\"true\"" + "}"
 	}
-	
+
 	return result
 }

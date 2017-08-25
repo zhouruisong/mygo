@@ -17,13 +17,14 @@ type Config struct {
 	LogPath    string `json:"log_path"`    //各级别日志路径
 	MysqlDsn   string `json:"mysql_dsn"`   //后台存储dsn
 	ListenPort int    `json:"listen_port"` //监听端口号
+	Interval   int    `json:"interval"`    //时间间隔
 }
 
 func loadConfig(path string) *Config {
 	if len(path) == 0 {
 		panic("path of conifg is null.")
 	}
-	
+
 	_, err := os.Stat(path)
 	if err != nil {
 		panic(err)
@@ -64,7 +65,11 @@ func main() {
 	m := martini.Classic()
 	d_mgr := devMgr.NewDevMgr(cfg.MysqlDsn, d)
 	r_mgr := ruleMgr.NewRuleMgr(cfg.MysqlDsn, r)
-	c_mgr := clnMgr.NewClnMgr(d_mgr, r_mgr, c)
+
+	if cfg.Interval == 0 {
+		cfg.Interval = 2
+	}
+	c_mgr := clnMgr.NewClnMgr(d_mgr, r_mgr, c, cfg.Interval)
 
 	dscreen := logger.GetLogger(cfg.LogPath, "dev_screenmgr")
 	s := logger.GetLogger(cfg.LogPath, "screenmgr")
@@ -88,7 +93,7 @@ func main() {
 	m.Post("/clean/start", c_mgr.StartCleaner)
 	m.Post("/clean/stop", c_mgr.StopCleaner)
 	m.Post("/clean/restart", c_mgr.RestartCleaner)
-	
+
 	m.Post("/clean/delfile", c_mgr.DeleteFile)
 
 	m.Post("/clean/delstreamfile", c_mgr.DeleteStreamFile)

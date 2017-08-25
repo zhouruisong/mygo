@@ -27,9 +27,10 @@ type ClnMgr struct {
 	cleaners []*Cleaner
 	Logger   *log.Logger
 	cleaner  *Cleaner
+	interval int64
 }
 
-func NewClnMgr(dm *devMgr.DevMgr, rm *ruleMgr.RuleMgr, lg *log.Logger) *ClnMgr {
+func NewClnMgr(dm *devMgr.DevMgr, rm *ruleMgr.RuleMgr, lg *log.Logger, sec int64) *ClnMgr {
 	dm.LoadDevInfos()
 	dm.LoadClusterInfos()
 	rm.LoadRuleInfos()
@@ -40,6 +41,7 @@ func NewClnMgr(dm *devMgr.DevMgr, rm *ruleMgr.RuleMgr, lg *log.Logger) *ClnMgr {
 		cls:     dm.ClusterInfos,
 		rules:   rm.RuleInfos,
 		Logger:  lg,
+		interval sec,
 	}
 	return c
 }
@@ -60,13 +62,13 @@ func (cm *ClnMgr) Restart() {
 func (cm *ClnMgr) Run() {
 	//遍历规则，为每个规则创建一个cleaner
 	for _, r := range cm.rules {
-		c := NewCleaner(cm.Logger, r, cm.devs, cm.cls)
+		c := NewCleaner(cm.Logger, r, cm.devs, cm.cls, cm.interval)
 		cm.cleaners = append(cm.cleaners, c)
 		go c.Run()
 	}
 	//单独的清理，用于做指定文件删除
 	if len(cm.rules) > 0 {
-		cm.cleaner = NewCleaner(cm.Logger, cm.rules[0], cm.devs, cm.cls)
+		cm.cleaner = NewCleaner(cm.Logger, cm.rules[0], cm.devs, cm.cls, cm.interval)
 	}
 }
 
@@ -104,10 +106,11 @@ type Cleaner struct {
 	cls       []devMgr.ClusterInfo
 	logger    *log.Logger
 	stop_ch   chan bool
+	interval  int64
 	initial   bool
 }
 
-func NewCleaner(lg *log.Logger, r ruleMgr.RuleInfo, ds []devMgr.DevInfo, cs []devMgr.ClusterInfo) *Cleaner {
+func NewCleaner(lg *log.Logger, r ruleMgr.RuleInfo, ds []devMgr.DevInfo, cs []devMgr.ClusterInfo, sec int64) *Cleaner {
 	//cleaner
 	cl_name := fmt.Sprintf("cleaner_%s", r.Name)
 	c := &Cleaner{
@@ -117,6 +120,7 @@ func NewCleaner(lg *log.Logger, r ruleMgr.RuleInfo, ds []devMgr.DevInfo, cs []de
 		cls:     cs,
 		logger:  lg,
 		stop_ch: make(chan bool, len(cs)),
+		interval: sec,
 	}
 	return c
 }
@@ -345,7 +349,7 @@ func (clr *Cleaner) service_get_m3u8(cls devMgr.ClusterInfo, c chan TaskInfo) {
 			clr.logger.Errorf("service_get_m3u8 stop and exit.")
 			return
 			//定时任务取m3u8文件列表
-		case <-time.After(time.Second * 2):
+		case <-time.After(time.Second * clr.interval):
 			hour, _, _ := clr.getLocalTimeClock()
 			//	fmt.Println(hour, min, sec)
 			//如果不在时间段sleep

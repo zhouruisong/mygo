@@ -5,21 +5,21 @@ package conf
 import (
 	"./conf"
 	"fmt"
-	"strconv"
-	"strings"
 	"github.com/labix.org/v2/mgo"
 	"github.com/labix.org/v2/mgo/bson"
+	"strconv"
+	"strings"
 )
 
 type InputServerPara struct {
-	Op                     int
-	Nodenumber           int
-	Nodenumberkey       int
-	Ip                     string
-	Explain               string
-	Id_                    string
-	Dispatchstatus      int
-	Act                    int
+	Op             int
+	Nodenumber     int
+	Nodenumberkey  int
+	Ip             string
+	Explain        string
+	Id_            string
+	Dispatchstatus int
+	Act            int
 }
 
 func OperateUploadServer(input *InputServerPara) string {
@@ -45,56 +45,56 @@ func OperateUploadServer(input *InputServerPara) string {
 
 		err := collection.Insert(&info)
 		if err != nil {
-			result = result + "\"result\":" +  "\"false\"" + "}"
+			result = result + "\"result\":" + "\"false\"" + "}"
 		} else {
-			result = result + "\"result\":" +  "\"true\"" + "}"
+			result = result + "\"result\":" + "\"true\"" + "}"
 		}
 	case conf.SELECT:
 		// 查询数据
 		result = result + "\"result\": " + "["
-		var info[] conf.UploadServerInfo
+		var info []conf.UploadServerInfo
 
-		err  := collection.Find(bson.M{"nodenumber": input.Nodenumber}).All(&info)
+		err := collection.Find(bson.M{"nodenumber": input.Nodenumber}).All(&info)
 		if err != nil {
-			result = result + "\"result\":" +  "\"false\"" + "}"
+			result = result + "\"result\":" + "\"false\"" + "}"
 		} else {
-			for i ,_ := range info {
+			for i, _ := range info {
 				// fmt.Println(info[i])
-				e := info[i];
+				e := info[i]
 				result = result + "{" + "\"act\":" + strconv.Itoa(e.Act) + "," + "\"beattime\":" + "\"" + e.Beattime + "\"" + "," + "\"cachesize\":" + "\"" + e.Cachesize + "\"" + ","
 				result = result + "\"cacheuse\":" + strconv.Itoa(e.Cacheuse) + "," + "\"dispatchstatus\":" + strconv.Itoa(e.Dispatchstatus) + ","
 				result = result + "\"explain\":" + "\"" + e.Explain + "\"" + "," + "\"id\":" + strconv.Itoa(e.Id) + "," + "\"ip\":" + "\"" + e.Ip + "\"" + "," + "\"nodenumber\":" + strconv.Itoa(e.Nodenumber) + ","
 				result = result + "\"runstatus\":" + strconv.Itoa(e.Runstatus) + "},"
 			}
-			result = strings.TrimSuffix(result, ",");
-			result = result+ "]" + "," + "\"count\":" + strconv.Itoa(len(info)) + "}";
+			result = strings.TrimSuffix(result, ",")
+			result = result + "]" + "," + "\"count\":" + strconv.Itoa(len(info)) + "}"
 		}
 	case conf.SELECTALL:
 		// 查询all
 		// var AllInfo conf.UploadServerAll;
 		result = result + "\"result\": " + "["
-		e := conf.UploadServerInfo{};
-		iter := collection.Find(nil).Iter();
-		var count = 0;
+		e := conf.UploadServerInfo{}
+		iter := collection.Find(nil).Iter()
+		var count = 0
 		for iter.Next(&e) {
-			count++;
-    			result = result + "{" + "\"Id_\":" + "\"" + e.Id_.Hex() + "\"" + "," + "\"act\":" + strconv.Itoa(e.Act) + "," + "\"beattime\":" + "\"" + e.Beattime + "\"" + "," + "\"cachesize\":" + "\"" + e.Cachesize + "\"" + ",";
-			result = result + "\"cacheuse\":" + strconv.Itoa(e.Cacheuse) + "," + "\"dispatchstatus\":" + strconv.Itoa(e.Dispatchstatus) + ",";
-			result = result + "\"explain\":" + "\"" + e.Explain + "\"" + "," + "\"id\":" + strconv.Itoa(e.Id) + "," + "\"ip\":" + "\"" + e.Ip + "\"" + "," + "\"nodenumber\":" + strconv.Itoa(e.Nodenumber) + ",";
-			result = result + "\"runstatus\":" + strconv.Itoa(e.Runstatus) + "},";
-  		}
-  		result = strings.TrimSuffix(result, ",");
-  		result = result+ "]" + "," + "\"count\":" + strconv.Itoa(count) + "}";
-  		// fmt.Println(AllInfo)
+			count++
+			result = result + "{" + "\"Id_\":" + "\"" + e.Id_.Hex() + "\"" + "," + "\"act\":" + strconv.Itoa(e.Act) + "," + "\"beattime\":" + "\"" + e.Beattime + "\"" + "," + "\"cachesize\":" + "\"" + e.Cachesize + "\"" + ","
+			result = result + "\"cacheuse\":" + strconv.Itoa(e.Cacheuse) + "," + "\"dispatchstatus\":" + strconv.Itoa(e.Dispatchstatus) + ","
+			result = result + "\"explain\":" + "\"" + e.Explain + "\"" + "," + "\"id\":" + strconv.Itoa(e.Id) + "," + "\"ip\":" + "\"" + e.Ip + "\"" + "," + "\"nodenumber\":" + strconv.Itoa(e.Nodenumber) + ","
+			result = result + "\"runstatus\":" + strconv.Itoa(e.Runstatus) + "},"
+		}
+		result = strings.TrimSuffix(result, ",")
+		result = result + "]" + "," + "\"count\":" + strconv.Itoa(count) + "}"
+		// fmt.Println(AllInfo)
 	case conf.UPDATE:
 		// 更新数据
 		// fmt.Println(input)
-		err := collection.Update(bson.M{"nodenumber": input.Nodenumberkey}, 
+		err := collection.Update(bson.M{"nodenumber": input.Nodenumberkey},
 			bson.M{"$set": bson.M{"ip": input.Ip, "nodenumber": input.Nodenumber, "act": input.Act, "dispatchstatus": input.Dispatchstatus, "explain": input.Explain}})
 		if err != nil {
-			result = result + "\"result\":" +  "\"false\"" + "}"
+			result = result + "\"result\":" + "\"false\"" + "}"
 		} else {
-			result = result + "\"result\":" +  "\"true\"" + "}"
+			result = result + "\"result\":" + "\"true\"" + "}"
 		}
 	case conf.DELETE:
 		// 删除数据
@@ -103,14 +103,14 @@ func OperateUploadServer(input *InputServerPara) string {
 		// _, err := collection.RemoveAll(bson.M{"_id": bson.ObjectId(input.Id_)})
 		_, err := collection.RemoveAll(bson.M{"nodenumber": input.Nodenumber})
 		if err != nil {
-			result = result + "\"result\":" +  "\"false\"" + "}"
+			result = result + "\"result\":" + "\"false\"" + "}"
 		} else {
-			result = result + "\"result\":" +  "\"true\"" + "}"
+			result = result + "\"result\":" + "\"true\"" + "}"
 		}
 	default:
 		info := fmt.Sprintf("Invalid op = %d", input.Op)
 		fmt.Println(info)
-		result = result + "\"result\":" +  "\"false\"" + "}"
+		result = result + "\"result\":" + "\"false\"" + "}"
 	}
 
 	return result

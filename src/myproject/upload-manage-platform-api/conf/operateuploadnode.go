@@ -5,25 +5,25 @@ package conf
 import (
 	"./conf"
 	"fmt"
-	"strconv"
-	"strings"
 	"github.com/labix.org/v2/mgo"
 	"github.com/labix.org/v2/mgo/bson"
+	"strconv"
+	"strings"
 )
 
 type InputNodePara struct {
 	Op             int
-	Ip                     string
+	Ip             string
 	Nodenumber     int
-	Nodenumberkey   int
-	Cdnnodeid        int
-	Nodename         string
-	Type              int
+	Nodenumberkey  int
+	Cdnnodeid      int
+	Nodename       string
+	Type           int
 	Othercdnnodeid int
-	Hdfsname         string
-	Dispatchstatus      int
-	Explain               string
-	Act                    int
+	Hdfsname       string
+	Dispatchstatus int
+	Explain        string
+	Act            int
 }
 
 func OperateUploadNode(input *InputNodePara) string {
@@ -53,33 +53,33 @@ func OperateUploadNode(input *InputNodePara) string {
 
 		err := collection.Insert(&e)
 		if err != nil {
-			result = result + "\"result\":" +  "\"false\"" + "}"
+			result = result + "\"result\":" + "\"false\"" + "}"
 		} else {
-			result = result + "\"result\":" +  "\"true\"" + "}"
+			result = result + "\"result\":" + "\"true\"" + "}"
 		}
 	case conf.SELECT:
 		// 查询数据
 		result = result + "\"result\": " + "["
 		// e := new(conf.NodeInfo)
 		// err := collection.Find(bson.M{"nodenumber": input.Nodenumber}).One(&e)
-		var info[] conf.NodeInfo
-		err  := collection.Find(bson.M{"nodenumber": input.Nodenumber}).All(&info)
+		var info []conf.NodeInfo
+		err := collection.Find(bson.M{"nodenumber": input.Nodenumber}).All(&info)
 
 		if err != nil {
-			result = result + "\"result\":" +  "\"false\"" + "}"
+			result = result + "\"result\":" + "\"false\"" + "}"
 		} else {
-			for i ,_ := range info {
+			for i, _ := range info {
 				// fmt.Println(info[i])
-				e := info[i];
+				e := info[i]
 				result = result + "{" + "\"id\":" + strconv.Itoa(e.Id) + "," + "\"namenodeip\":" + "\"" + e.Namenodeip + "\"" + "," + "\"nodenumber\":" + strconv.Itoa(e.Nodenumber) + ","
 				result = result + "\"nodename\":" + "\"" + e.Nodename + "\"" + "," + "\"hdfsname\":" + "\"" + e.Hdfsname + "\"" + ","
 				result = result + "\"hdfsUrl\":" + "\"" + e.HdfsURL + "\"" + "," + "\"runstatus\":" + strconv.Itoa(e.Runstatus) + "," + "\"status\":" + strconv.Itoa(e.Status) + "," + "\"uploadstatus\":" + strconv.Itoa(e.Uploadstatus) + ","
 				result = result + "\"encodestatus\":" + strconv.Itoa(e.Encodestatus) + "," + "\"cdnnodeid\":" + strconv.Itoa(e.Cdnnodeid) + "," + "\"ip\":" + "\"" + e.Ip + "\"" + "," + "\"cachesize\":" + "\"" + e.Cachesize + "\"" + "," + "\"cacheuse\":" + strconv.Itoa(e.Cacheuse) + ","
-				result = result + "\"beattime\":" + "\"" + e.Beattime + "\"" + "," + "\"dispatchstatus\":" + strconv.Itoa(e.Dispatchstatus) + "," + "\"explain\":" + "\"" + e.Explain + "\"" + "," + "\"act\":" + strconv.Itoa(e.Act) + "," + "\"downloadloadbalanceurl\":" + "\"" + e.DownloadLoadbalanceURL + "\"" + "," 
+				result = result + "\"beattime\":" + "\"" + e.Beattime + "\"" + "," + "\"dispatchstatus\":" + strconv.Itoa(e.Dispatchstatus) + "," + "\"explain\":" + "\"" + e.Explain + "\"" + "," + "\"act\":" + strconv.Itoa(e.Act) + "," + "\"downloadloadbalanceurl\":" + "\"" + e.DownloadLoadbalanceURL + "\"" + ","
 				result = result + "\"type\":" + strconv.Itoa(e.Type) + "},"
 			}
 			result = strings.TrimSuffix(result, ",")
-			result = result+ "]" + "," + "\"count\":" + strconv.Itoa(len(info)) + "}"
+			result = result + "]" + "," + "\"count\":" + strconv.Itoa(len(info)) + "}"
 		}
 	case conf.SELECTALL:
 		// 查询all
@@ -87,40 +87,40 @@ func OperateUploadNode(input *InputNodePara) string {
 		result = result + "\"result\": " + "["
 		e := conf.NodeInfo{}
 		iter := collection.Find(nil).Iter()
-		var count = 0;
+		var count = 0
 		for iter.Next(&e) {
-			count++;
+			count++
 			result = result + "{" + "\"id\":" + strconv.Itoa(e.Id) + "," + "\"namenodeip\":" + "\"" + e.Namenodeip + "\"" + "," + "\"nodenumber\":" + strconv.Itoa(e.Nodenumber) + ","
-			result = result + "\"nodename\":" + "\"" + e.Nodename + "\"" + "," + "\"hdfsname\":" + "\"" + e.Hdfsname + "\"" + ",";
+			result = result + "\"nodename\":" + "\"" + e.Nodename + "\"" + "," + "\"hdfsname\":" + "\"" + e.Hdfsname + "\"" + ","
 			result = result + "\"hdfsUrl\":" + "\"" + e.HdfsURL + "\"" + "," + "\"runstatus\":" + strconv.Itoa(e.Runstatus) + "," + "\"status\":" + strconv.Itoa(e.Status) + "," + "\"uploadstatus\":" + strconv.Itoa(e.Uploadstatus) + ","
 			result = result + "\"encodestatus\":" + strconv.Itoa(e.Encodestatus) + "," + "\"cdnnodeid\":" + strconv.Itoa(e.Cdnnodeid) + "," + "\"ip\":" + "\"" + e.Ip + "\"" + "," + "\"cachesize\":" + "\"" + e.Cachesize + "\"" + "," + "\"cacheuse\":" + strconv.Itoa(e.Cacheuse) + ","
-			result = result + "\"beattime\":" + "\"" + e.Beattime + "\"" + "," + "\"dispatchstatus\":" + strconv.Itoa(e.Dispatchstatus) + "," + "\"explain\":" + "\"" + e.Explain + "\"" + "," + "\"act\":" + strconv.Itoa(e.Act) + "," + "\"downloadloadbalanceurl\":" + "\"" + e.DownloadLoadbalanceURL + "\"" + "," 
+			result = result + "\"beattime\":" + "\"" + e.Beattime + "\"" + "," + "\"dispatchstatus\":" + strconv.Itoa(e.Dispatchstatus) + "," + "\"explain\":" + "\"" + e.Explain + "\"" + "," + "\"act\":" + strconv.Itoa(e.Act) + "," + "\"downloadloadbalanceurl\":" + "\"" + e.DownloadLoadbalanceURL + "\"" + ","
 			result = result + "\"type\":" + strconv.Itoa(e.Type) + "},"
-  		}
-  		result = strings.TrimSuffix(result, ",")
-  		result = result+ "]" + "," + "\"count\":" + strconv.Itoa(count) + "}"
+		}
+		result = strings.TrimSuffix(result, ",")
+		result = result + "]" + "," + "\"count\":" + strconv.Itoa(count) + "}"
 	case conf.UPDATE:
 		// 更新数据
-		err := collection.Update(bson.M{"nodenumber": input.Nodenumberkey}, 
+		err := collection.Update(bson.M{"nodenumber": input.Nodenumberkey},
 			bson.M{"$set": bson.M{"ip": input.Ip, "nodenumber": input.Nodenumber, "explain": input.Explain,
-			"cdnNodeId": input.Cdnnodeid, "nodename": input.Nodename, "type": input.Type}})
+				"cdnNodeId": input.Cdnnodeid, "nodename": input.Nodename, "type": input.Type}})
 		if err != nil {
-			result = result + "\"result\":" +  "\"false\"" + "}"
+			result = result + "\"result\":" + "\"false\"" + "}"
 		} else {
-			result = result + "\"result\":" +  "\"true\"" + "}"
+			result = result + "\"result\":" + "\"true\"" + "}"
 		}
 	case conf.DELETE:
 		// 删除数据
 		_, err := collection.RemoveAll(bson.M{"nodenumber": input.Nodenumber})
 		if err != nil {
-			result = result + "\"result\":" +  "\"false\"" + "}"
+			result = result + "\"result\":" + "\"false\"" + "}"
 		} else {
-			result = result + "\"result\":" +  "\"true\"" + "}"
+			result = result + "\"result\":" + "\"true\"" + "}"
 		}
 	default:
 		info := fmt.Sprintf("Invalid op = %d", input.Op)
 		fmt.Println(info)
-		result = result + "\"result\":" +  "\"false\"" + "}"
+		result = result + "\"result\":" + "\"false\"" + "}"
 	}
 
 	return result

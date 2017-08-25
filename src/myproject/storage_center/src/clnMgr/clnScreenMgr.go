@@ -39,7 +39,7 @@ type DetailAddress struct {
 }
 
 type DetailEntry struct {
-	Count int    `json:"count"`
+	Count int      `json:"count"`
 	Items []string `json:"items"`
 }
 
@@ -47,15 +47,15 @@ type DetailEntry struct {
 type InputDateInfo struct {
 	Domain    string     `json:"domain"`
 	NotifyUrl string     `json:"notify_url"`
-	Dtype     int         `json:"dtype"`
+	Dtype     int        `json:"dtype"`
 	Details   DetailDate `json:"details"`
 }
 
 //按条删除接口传入的参数
 type InputEntryInfo struct {
-	Domain    string       `json:"domain"`
-	NotifyUrl string       `json:"notify_url"`
-	Dtype     int       `json:"dtype"`
+	Domain    string      `json:"domain"`
+	NotifyUrl string      `json:"notify_url"`
+	Dtype     int         `json:"dtype"`
 	Details   DetailEntry `json:"details"`
 }
 
@@ -164,7 +164,7 @@ func (clr *ClnScreenMgr) getJsonInfo(mode int, logid string, buf []byte, pDevEnt
 }
 
 //从给定的文件信息做删除操作, mode 为1表示按条删除，为2表示按天删除
-func (clr *ClnScreenMgr) CleanFile`(mode int, logid string, buf []byte) error {
+func (clr *ClnScreenMgr) CleanFile(mode int, logid string, buf []byte) error {
 	clr.Logger.Infof("logid:%v, get req: %v", logid, string(buf))
 	var results []DevRet
 
@@ -180,7 +180,7 @@ func (clr *ClnScreenMgr) CleanFile`(mode int, logid string, buf []byte) error {
 	} else if mode == 2 {
 		clr.Logger.Infof("logid:%v, zhouruisong rev clean file: %+v", logid, devDate)
 	}
-	
+
 	//分别向所有集群下发删除指令
 	var waitgroup sync.WaitGroup
 	for _, c := range clr.devs {
@@ -235,7 +235,7 @@ func (clr *ClnScreenMgr) sendtoscreendev(logid string, host string, buf []byte, 
 		return
 	}
 
-	if ret.Code != 0  || ret.Message != "ok"{
+	if ret.Code != 0 || ret.Message != "ok" {
 		clr.Logger.Errorf("logid:%v, input error :send id:%v, host%v, code:%v, msg:%v", logid, host, ret.Code, ret.Message)
 		return
 	}
